@@ -1,7 +1,10 @@
 from flask import Blueprint, request, jsonify
 from email_validator import validate_email, EmailNotValidError
 from extension import bcrypt
-# from db import get_connection
+from db import get_connection
+import logging
+
+logger = logging.getLogger(__name__)
 import secrets
 from email_service import send_verification_email
 
@@ -56,7 +59,7 @@ def register():
         conn.commit()
 
         verification_link = f"https://flask-auth-5rj5.onrender.com/api/auth/verify-email/{verification_token}"
-        send_verification_mail(email, fullname, verification_link)
+        send_verification_email(email, fullname, verification_link)
 
         return jsonify({
             "success": True,
@@ -64,24 +67,33 @@ def register():
         }), 201
 
     except Exception as e:
+        logger.exception("Error during user registration")
         return jsonify({
             "success": False,
-            "message": "db connection failed"
+            "message": str(e)
         }), 500
 
     finally:
-        if cursor:
-            cursor.close()
-        if conn:
-            conn.close()
+        try:
+            if cursor:
+                cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn:
+                conn.close()
+        except Exception:
+            pass
 
 
 @auth_bp.route("/verify-email/<token>", methods=["GET"])
 def verify_email(token):
-    conn = get_connection()
-    cursor = conn.cursor()
-
+    conn = None
+    cursor = None
     try:
+        conn = get_connection()
+        cursor = conn.cursor()
+
         cursor.execute("""
             SELECT id
             FROM Users
@@ -104,8 +116,6 @@ def verify_email(token):
             WHERE id = %s
         """, (user["id"],))
 
-        # print(cursor.fetchone())
-
         conn.commit()
 
         return jsonify({
@@ -113,9 +123,21 @@ def verify_email(token):
             "message": "Email verified successfully."
         }), 200
 
+    except Exception as e:
+        logger.exception("Error verifying email")
+        return jsonify({"success": False, "message": str(e)}), 500
+
     finally:
-        cursor.close()
-        conn.close()
+        try:
+            if cursor:
+                cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn:
+                conn.close()
+        except Exception:
+            pass
 
 
 from flask_jwt_extended import create_access_token
@@ -130,6 +152,8 @@ def login():
     if not email or not password:
         return jsonify({"success": False, "message": "Email and password are required"}), 400
 
+    conn = None
+    cursor = None
     try:
         conn = get_connection()
         cursor = conn.cursor()
@@ -151,7 +175,6 @@ def login():
 
         access_token = create_access_token(identity=str(user["id"]), additional_claims={"role": user["role"], "email": user["email"]})
 
-        
         return jsonify({
             "success": True,
             "message": "Login successful.",
@@ -164,6 +187,18 @@ def login():
             }
         }), 200
 
+    except Exception as e:
+        logger.exception("Error during login")
+        return jsonify({"success": False, "message": str(e)}), 500
+
     finally:
-        cursor.close()
-        conn.close()
+        try:
+            if cursor:
+                cursor.close()
+        except Exception:
+            pass
+        try:
+            if conn:
+                conn.close()
+        except Exception:
+            pass
