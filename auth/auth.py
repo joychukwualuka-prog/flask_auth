@@ -1,9 +1,9 @@
 from flask import Blueprint, request, jsonify
 from email_validator import validate_email, EmailNotValidError
 from extension import bcrypt
-from db import get_connection
+# from db import get_connection
 import secrets
-from email_service import send_verification_mail
+from email_service import send_verification_email
 
 auth_bp = Blueprint("auth", __name__)
 
