@@ -7,3 +7,8 @@ bcrypt = Bcrypt()
 
 print(secrets.token_hex(32))
 print(secrets.token_hex(32))
+
+print("Hello")
+
+print("Google Client ID:", config.GOOGLE_CLIENT_ID)
+print("Google Client Secret:", config.GOOGLE_CLIENT_SECRET)
