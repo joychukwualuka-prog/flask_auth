@@ -62,7 +62,7 @@ def register():
         )
 
 
-        verification_link = (f"https://flask-auth-endpoint.onrender.com/api/auth/verify-email/{verification_token}")
+        verification_link = (f"https://flask-auth-5rj5.onrender.com/api/auth/verify-email/{verification_token}")
 
         html = f""" <h2>Welcome {fullname}!</h2>
                      <p>Click below to verify your account.</p>
