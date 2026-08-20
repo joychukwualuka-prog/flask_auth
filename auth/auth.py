@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, url_for
 from email_validator import validate_email, EmailNotValidError
-from extension import Bcrypt
+from extension import bcrypt
 from db import get_connection
 import secrets
 from email_service import send_verification_email
@@ -315,7 +315,7 @@ def reset_password(token):
             "message": "New password is required."
         }), 400
 
-    if new_password < 6:
+    if len(new_password) < 6:
         return jsonify({
             "success": False,
             "message": "Password must be at least 6 characters long."
