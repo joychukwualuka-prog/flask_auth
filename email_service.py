@@ -22,18 +22,19 @@ from brevo.transactional_emails import (
     SendTransacEmailRequestToItem
     )
 from flask import current_app
+from config import Config
 
 def send_verification_email(email, subject, html):
     client = Brevo(
-        api_key=current_app.config["BREVO_API_KEY"]
+        api_key=Config.BREVO_API_KEY
     )
     
     client.transactional_emails.send_transac_email(
         subject=subject,
         html_content=html,
         sender=SendTransacEmailRequestSender(
-            name=current_app.config["MAIL_FROM_TITLE"],
-            email=current_app.config["MAIL_FROM"],
+            name=Config.MAIL_FROM_TITLE,
+            email=Config.MAIL_FROM,
         ),
         to=[
             SendTransacEmailRequestToItem(
