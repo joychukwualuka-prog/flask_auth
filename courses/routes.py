@@ -128,7 +128,7 @@ def create_module(course_id):
         
         cursor.execute("""
             INSERT INTO module 
-                        (course_id, title, description, position) VALUES
+                        (course_id, title, description, module_position) VALUES
                        (%s, %s, %s, %s) 
         """, (course_id, title, description, position))
         module_id = cursor.lastrowid
