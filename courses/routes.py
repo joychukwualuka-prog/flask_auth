@@ -146,6 +146,9 @@ def create_module(course_id):
                 }), 201
     except Exception as e:
         return jsonify({"success": False, "message": "Failed to create module", "error": str(e)}), 500
+    finally:
+        if conn:
+            conn.close()
 
 @course_bp.route("/modules/<int:module_id>", methods=["GET"])
 @jwt_required()
