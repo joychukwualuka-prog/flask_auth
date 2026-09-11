@@ -14,6 +14,7 @@ def instructor_required(fn):
                 "success": False,
                 "message": "Instructor access required."
             }), 403
-            return fn(*args, **kwargs)
+            
+        return fn(*args, **kwargs)
 
     return wrapper

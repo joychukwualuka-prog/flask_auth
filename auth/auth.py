@@ -173,7 +173,7 @@ def login():
                    is_verified
             FROM Users
             WHERE email=%s
-        """, (email))
+        """, (email,))
 
         user = cursor.fetchone()
         print(user)
