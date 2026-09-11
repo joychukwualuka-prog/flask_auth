@@ -115,7 +115,7 @@ def get_course(course_id):
             if not course:
                 return jsonify({"success": False, "message": "Course not found."}), 404
             
-            return jsonify({"success": True, "message": f"Course found - {course["title"]}", "courses": course}), 200
+            return jsonify({"success": True, "message": f"Course found - {course['title']}", "courses": course}), 200
 
         
     except Exception as e:
